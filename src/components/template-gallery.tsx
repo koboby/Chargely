@@ -15,8 +15,8 @@ const designs=[
 ];
 function MiniInvoice({t,large=false}:{t:typeof designs[number];large?:boolean}){
  return <div className={`overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm ${large?"":"aspect-[1.18]"}`}>
-  <div className={`relative px-3 py-3 text-white ${t.kind==="dark"?"bg-slate-950":""}`} style={t.kind!=="dark"?{background:t.accent}:{}}>
-   <div className="flex items-center justify-between"><div><div className="h-2 w-16 rounded bg-white/90"/><div className="mt-1 h-1.5 w-10 rounded bg-white/55"/></div><div className="text-[8px] font-black tracking-[.18em]" style={{color:t.kind==="clean"||t.kind==="minimal"||t.kind==="classic"?t.accent:undefined}}>INVOICE</div></div>
+  <div className={`relative px-3 py-3 ${t.kind==="dark"?"bg-slate-950 text-white":t.kind==="clean"?"border-b-2 bg-white text-slate-800":t.kind==="minimal"?"bg-white text-slate-800":t.kind==="classic"?"bg-amber-50 text-slate-800":"text-white"}`} style={t.kind==="clean"||t.kind==="minimal"?{borderColor:t.accent}:t.kind==="classic"?{borderBottom:`3px solid ${t.accent}`}:{background:t.kind==="dark"?"#020617":t.accent}}>
+   <div className="flex items-center justify-between"><div><div className={`h-2 w-16 rounded ${t.kind==="clean"||t.kind==="minimal"||t.kind==="classic"?"bg-slate-800":"bg-white/90"}`}/><div className={`mt-1 h-1.5 w-10 rounded ${t.kind==="clean"||t.kind==="minimal"||t.kind==="classic"?"bg-slate-300":"bg-white/55"}`}/></div><div className="text-[8px] font-black tracking-[.18em]" style={{color:t.kind==="clean"||t.kind==="minimal"||t.kind==="classic"?t.accent:undefined}}>INVOICE</div></div>
    {t.kind==="bold"&&<div className="absolute -bottom-2 left-0 h-3 w-full rounded-[50%] bg-white/40"/>}
   </div>
   <div className="p-3">

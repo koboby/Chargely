@@ -16,7 +16,7 @@ const designs=[
 function MiniInvoice({t,large=false}:{t:typeof designs[number];large?:boolean}){
  return <div className={`overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm ${large?"":"aspect-[1.18]"}`}>
   <div className={`relative px-3 py-3 text-white ${t.kind==="dark"?"bg-slate-950":""}`} style={t.kind!=="dark"?{background:t.accent}:{}}>
-   <div className="flex items-center justify-between"><div><div className="h-2 w-16 rounded bg-white/90"/><div className="mt-1 h-1.5 w-10 rounded bg-white/55"/></div><div className="text-[8px] font-black tracking-[.18em]">INVOICE</div></div>
+   <div className="flex items-center justify-between"><div><div className="h-2 w-16 rounded bg-white/90"/><div className="mt-1 h-1.5 w-10 rounded bg-white/55"/></div><div className="text-[8px] font-black tracking-[.18em]" style={{color:t.kind==="clean"||t.kind==="minimal"||t.kind==="classic"?t.accent:undefined}}>INVOICE</div></div>
    {t.kind==="bold"&&<div className="absolute -bottom-2 left-0 h-3 w-full rounded-[50%] bg-white/40"/>}
   </div>
   <div className="p-3">

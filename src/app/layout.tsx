@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 export const metadata: Metadata = {
   title: { default: "Chargely — Invoicing made simple", template: "%s · Chargely" },
@@ -6,8 +6,8 @@ export const metadata: Metadata = {
   applicationName: "Chargely",
   manifest: "/manifest.webmanifest",
   icons: { icon: "/icon.svg", apple: "/icon.svg" },
-  themeColor: "#087b58",
 };
+export const viewport: Viewport = { themeColor: "#087b58" };
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="en"><body>{children}</body></html>;
 }

@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 export async function saveBusiness(formData:FormData){
  const supabase=await createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)redirect("/login");
  const name=String(formData.get("name")||"").trim();if(!name)throw new Error("Business name is required.");
- const payload={owner_id:user.id,name,phone:String(formData.get("phone")||"").trim()||null,email:String(formData.get("email")||"").trim()||null,address:String(formData.get("address")||"").trim()||null,currency:String(formData.get("currency")||"NGN")};
+ const payload={owner_id:user.id,name,phone:String(formData.get("phone")||"").trim()||null,email:String(formData.get("email")||"").trim()||null,address:String(formData.get("address")||"").trim()||null,currency:String(formData.get("currency")||"NGN"),default_template:String(formData.get("default_template")||"emerald")};
  const {data:existing}=await supabase.from("businesses").select("id").limit(1).maybeSingle();
  const result=existing?await supabase.from("businesses").update(payload).eq("id",existing.id):await supabase.from("businesses").insert(payload);
  if(result.error)throw new Error(result.error.message);revalidatePath("/");redirect("/dashboard");

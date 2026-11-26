@@ -29,6 +29,15 @@ Chargely is a mobile-first invoicing workspace for freelancers and small busines
 - Manual payment recording with partial and full payment status
 - Payment history and outstanding balance
 
+## Deploy with Vercel
+
+1. Open Vercel and choose **Add New → Project**.
+2. Import the `koboby/Chargely` GitHub repository.
+3. Keep the framework preset as **Next.js** and the root directory as `./`.
+4. Add `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and `NEXT_PUBLIC_APP_URL` in Vercel Project Settings → Environment Variables. Use your real Supabase project URL and publishable key; set the app URL to your Vercel production domain.
+5. Deploy. Add the Vercel production and preview URLs to Supabase Authentication → URL Configuration → Redirect URLs, and set the production Site URL.
+6. Future pushes to the connected GitHub branch trigger Vercel deployments automatically. GitHub Actions in this repository are only checks; they do not deploy the app.
+
 ## Local development
 
 1. Install Node.js 20 or newer.

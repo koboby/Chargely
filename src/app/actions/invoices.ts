@@ -29,3 +29,22 @@ export async function recordPayment(id:string,formData:FormData){
  const {error}=await supabase.rpc("record_invoice_payment",{p_document_id:id,p_amount:amount,p_method:method,p_note:note});
  if(error)redirect(`/invoices/${id}?error=Could%20not%20record%20payment`);revalidatePath(`/invoices/${id}`);revalidatePath("/dashboard");redirect(`/invoices/${id}?success=Payment%20recorded%20successfully`);
 }
+
+export async function updateInvoice(id:string,formData:FormData){
+ const supabase=await createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)redirect("/login");
+ const descriptions=formData.getAll("description").map(v=>String(v).trim());const quantities=formData.getAll("quantity").map(v=>Number(v));const prices=formData.getAll("unit_price").map(v=>Number(v));
+ const lines=descriptions.map((description,i)=>({description,quantity:quantities[i],unit_price:prices[i]}));
+ if(!lines.length||lines.length>500||lines.some(x=>!x.description||!Number.isFinite(x.quantity)||x.quantity<=0||!Number.isFinite(x.unit_price)||x.unit_price<0))redirect(`/invoices/${id}/edit?error=Check%20your%20invoice%20items`);
+ const clientId=String(formData.get("client_id")||"");const discount=Number(formData.get("discount")||0);const taxRate=Number(formData.get("tax_rate")||0);
+ if(!clientId||!Number.isFinite(discount)||discount<0||!Number.isFinite(taxRate)||taxRate<0||taxRate>100)redirect(`/invoices/${id}/edit?error=Enter%20valid%20invoice%20details`);
+ const {error}=await supabase.rpc("update_invoice",{p_document_id:id,p_client_id:clientId,p_issue_date:String(formData.get("issue_date")||new Date().toISOString().slice(0,10)),p_due_date:String(formData.get("due_date")||"")||null,p_discount:discount,p_tax_rate:taxRate,p_notes:String(formData.get("notes")||"").trim()||null,p_items:lines});
+ if(error)redirect(`/invoices/${id}/edit?error=${encodeURIComponent(error.message.includes("payments")?"Invoices with payments cannot be edited":error.message.includes("Signed")?"Signed invoices cannot be edited":"Could not save invoice changes")}`);
+ revalidatePath("/invoices");revalidatePath(`/invoices/${id}`);revalidatePath(`/i`);
+ redirect(`/invoices/${id}?success=Invoice%20updated%20successfully`);
+}
+export async function deleteInvoice(id:string){
+ const supabase=await createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)redirect("/login");
+ const {error}=await supabase.from("documents").delete().eq("id",id);
+ if(error)redirect(`/invoices/${id}?error=Could%20not%20delete%20invoice`);
+ revalidatePath("/invoices");revalidatePath("/dashboard");redirect("/invoices?success=Invoice%20deleted%20successfully");
+}

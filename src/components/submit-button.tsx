@@ -1,7 +1,7 @@
 "use client";
 import { useFormStatus } from "react-dom";
 import type { ReactNode } from "react";
-export function SubmitButton({children,pendingLabel="Saving…",className=""}:{children:ReactNode;pendingLabel?:string;className?:string}){
+export function SubmitButton({children,pendingLabel="Saving…",className="",disabled=false}:{children:ReactNode;pendingLabel?:string;className?:string;disabled?:boolean}){
  const {pending}=useFormStatus();
- return <button type="submit" disabled={pending} aria-busy={pending} className={`${className} disabled:cursor-wait disabled:opacity-65`}>{pending?pendingLabel:children}</button>;
+ return <button type="submit" disabled={pending||disabled} aria-busy={pending} className={`${className} disabled:cursor-not-allowed disabled:opacity-65`}>{pending?pendingLabel:children}</button>;
 }

@@ -22,3 +22,10 @@ export async function sendInvoice(id:string){
  if(doc.status==="draft"){const {error}=await supabase.from("documents").update({status:"sent",public_token:token}).eq("id",id);if(error)throw new Error(error.message);}
  revalidatePath(`/invoices/${id}`);revalidatePath("/invoices");
 }
+export async function recordPayment(id:string,formData:FormData){
+ const supabase=await createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)redirect("/login");
+ const amount=Number(formData.get("amount"));const method=String(formData.get("method")||"transfer");const note=String(formData.get("note")||"").trim()||null;
+ if(!Number.isFinite(amount)||amount<=0)throw new Error("Enter a valid payment amount.");
+ const {error}=await supabase.rpc("record_invoice_payment",{p_document_id:id,p_amount:amount,p_method:method,p_note:note});
+ if(error)throw new Error(error.message);revalidatePath(`/invoices/${id}`);revalidatePath("/dashboard");
+}

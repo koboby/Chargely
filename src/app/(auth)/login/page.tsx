@@ -1,0 +1,10 @@
+"use client";
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+export default function LoginPage() {
+ const [email,setEmail]=useState(""); const [password,setPassword]=useState(""); const [error,setError]=useState(""); const [busy,setBusy]=useState(false); const router=useRouter();
+ async function submit(e:React.FormEvent<HTMLFormElement>){e.preventDefault();setBusy(true);setError("");try{const {error}=await createClient().auth.signInWithPassword({email,password});if(error)throw error;router.push("/dashboard");router.refresh();}catch(err){setError(err instanceof Error?err.message:"Unable to sign in.");}finally{setBusy(false);}}
+ return <><p className="text-sm font-semibold text-[#0b9468]">WELCOME BACK</p><h1 className="mt-2 text-3xl font-bold tracking-tight">Log in to Chargely</h1><p className="mt-2 text-sm text-[#718078]">Your business workspace is waiting.</p><form onSubmit={submit} className="mt-7 space-y-4"><label className="block text-sm font-semibold">Email address<input required type="email" autoComplete="email" value={email} onChange={e=>setEmail(e.target.value)} className="mt-2 w-full rounded-xl border border-[#dfe7e1] px-4 py-3 outline-none focus:border-[#087b58]"/></label><label className="block text-sm font-semibold">Password<input required type="password" autoComplete="current-password" value={password} onChange={e=>setPassword(e.target.value)} className="mt-2 w-full rounded-xl border border-[#dfe7e1] px-4 py-3 outline-none focus:border-[#087b58]"/></label>{error&&<p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}<button disabled={busy} className="w-full rounded-xl bg-[#087b58] px-4 py-3.5 font-semibold text-white disabled:opacity-60">{busy?"Signing in…":"Log in"}</button></form><p className="mt-6 text-center text-sm text-[#718078]">New to Chargely? <Link className="font-bold text-[#087b58]" href="/signup">Create an account</Link></p></>;
+}

@@ -6,3 +6,10 @@ body { margin:0; background:#f7f9f7; color:var(--ink); font-family:Arial, Helvet
 button,input,select,textarea { font:inherit; }
 button,a { -webkit-tap-highlight-color:transparent; }
 ::selection { background:#ccebdc; color:#103b2c; }
+
+@media print {
+  @page { size: A4; margin: 16mm; }
+  body { background: white !important; color: #17251f !important; }
+  .print\\:hidden { display: none !important; }
+  article { box-shadow: none !important; }
+}

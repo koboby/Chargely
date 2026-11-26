@@ -4,8 +4,8 @@ import { Plus, Trash2 } from "lucide-react";
 type Line = { id:number; description:string; quantity:string; unitPrice:string };
 let nextId=1;
 const blank=():Line=>({id:nextId++,description:"",quantity:"1",unitPrice:""});
-export function InvoiceItemsEditor(){
- const [items,setItems]=useState<Line[]>([blank()]);
+export function InvoiceItemsEditor({initialItems}:{initialItems?:{description:string;quantity:number;unit_price:number}[]}){
+ const [items,setItems]=useState<Line[]>(()=>initialItems?.length?initialItems.map(item=>({id:nextId++,description:item.description,quantity:String(item.quantity),unitPrice:String(item.unit_price)})):[blank()]);
  const update=(id:number,key:keyof Omit<Line,"id">,value:string)=>setItems(current=>current.map(item=>item.id===id?{...item,[key]:value}:item));
  const add=()=>{if(items.length<500)setItems(current=>[...current,blank()]);};
  const remove=(id:number)=>setItems(current=>current.length>1?current.filter(item=>item.id!==id):current);

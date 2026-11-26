@@ -14,15 +14,15 @@ export async function saveBusiness(formData:FormData){
 }
 export async function createClientRecord(formData:FormData){
  const supabase=await createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)redirect("/login");
- const {data:business,error:be}=await supabase.from("businesses").select("id").limit(1).maybeSingle();if(be)throw new Error(be.message);if(!business)redirect("/onboarding");
- const name=String(formData.get("name")||"").trim();if(!name)throw new Error("Client name is required.");
+ const {data:business,error:be}=await supabase.from("businesses").select("id").limit(1).maybeSingle();if(be)redirect("/clients?error=Could%20not%20load%20your%20business");if(!business)redirect("/onboarding");
+ const name=String(formData.get("name")||"").trim();if(!name)redirect("/clients?error=Client%20name%20is%20required");
  const {error}=await supabase.from("clients").insert({business_id:business.id,name,phone:String(formData.get("phone")||"").trim()||null,email:String(formData.get("email")||"").trim()||null,address:String(formData.get("address")||"").trim()||null});
  if(error)redirect("/clients?error=Could%20not%20add%20client");revalidatePath("/clients");redirect("/clients?success=Client%20added");
 }
 export async function deleteClient(id:string){const supabase=await createClient();const {error}=await supabase.from("clients").delete().eq("id",id);if(error)redirect("/clients?error=Could%20not%20delete%20client");revalidatePath("/clients");redirect("/clients?success=Client%20deleted");}
 export async function createItem(formData:FormData){
  const supabase=await createClient();const {data:business}=await supabase.from("businesses").select("id").limit(1).maybeSingle();if(!business)redirect("/onboarding");
- const name=String(formData.get("name")||"").trim();const price=Number(formData.get("default_price")||0);if(!name||!Number.isFinite(price)||price<0)throw new Error("Enter a valid item and price.");
+ const name=String(formData.get("name")||"").trim();const price=Number(formData.get("default_price")||0);if(!name||!Number.isFinite(price)||price<0)redirect("/items?error=Enter%20a%20valid%20item%20and%20price");
  const {error}=await supabase.from("items").insert({business_id:business.id,name,default_price:price});if(error)redirect("/items?error=Could%20not%20save%20item");revalidatePath("/items");redirect("/items?success=Item%20saved");
 }
 export async function deleteItem(id:string){const supabase=await createClient();const {error}=await supabase.from("items").delete().eq("id",id);if(error)redirect("/items?error=Could%20not%20delete%20item");revalidatePath("/items");redirect("/items?success=Item%20deleted");}

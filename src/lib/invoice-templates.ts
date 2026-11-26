@@ -8,7 +8,7 @@ export const invoiceTemplates = {
   classic: { name: "Classic", accent: "#854d0e", soft: "#fefce8", border: "#fde68a", heading: "INVOICE" },
   coral: { name: "Coral", accent: "#be123c", soft: "#fff1f2", border: "#fecdd3", heading: "INVOICE" },
   forest: { name: "Forest", accent: "#166534", soft: "#f0fdf4", border: "#bbf7d0", heading: "INVOICE" },
-  royal: { name: "Royal", accent: "#4338ca", soft: "#eef2ff", border: "#c7d2fe", heading: "INVOICE" },
+  royal: { name: "Royal", accent: "#48269b", soft: "#f0ebfa", border: "#ddd0f5", heading: "INVOICE" },
 } as const;
 export type InvoiceTemplateKey = keyof typeof invoiceTemplates;
 export function getInvoiceTemplate(key?: string) {

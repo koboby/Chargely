@@ -6,7 +6,6 @@ import { headers } from "next/headers";
 import { sendInvoice, recordPayment } from "@/app/actions/invoices";
 import { InvoiceActions } from "@/components/invoice-actions";
 import { SubmitButton } from "@/components/submit-button";
-import { SubmitButton } from "@/components/submit-button";
 import { getInvoiceTemplate } from "@/lib/invoice-templates";
 export default async function InvoiceDetailPage({params}:{params:Promise<{id:string}>}){
  const {id}=await params;const supabase=await createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)redirect("/login");

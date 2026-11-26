@@ -10,6 +10,6 @@ button,a { -webkit-tap-highlight-color:transparent; }
 @media print {
   @page { size: A4; margin: 16mm; }
   body { background: white !important; color: #17251f !important; }
-  .print\\:hidden { display: none !important; }
+  [class~="print:hidden"] { display: none !important; }
   article { box-shadow: none !important; }
 }

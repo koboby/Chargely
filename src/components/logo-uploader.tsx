@@ -16,6 +16,17 @@ export function LogoUploader({businessId,initialUrl}:{businessId:string;initialU
   }
   bitmap.close();throw new Error("Could not compress this image below 100KB. Try a simpler logo.");
  }
+ async function removeLogo(){
+  setBusy(true);setMessage("");setIsError(false);
+  try{
+   const supabase=createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)throw new Error("Please log in again.");
+   const path=`${user.id}/${businessId}/logo.webp`;
+   const {error:removeError}=await supabase.storage.from("business-logos").remove([path]);if(removeError)throw removeError;
+   const {error:updateError}=await supabase.from("businesses").update({logo_url:null}).eq("id",businessId);if(updateError)throw updateError;
+   setLogo(null);setMessage("Business logo removed successfully.");
+  }catch(error){setIsError(true);setMessage(error instanceof Error?error.message:"Could not remove logo.");}
+  finally{setBusy(false);}
+ }
  async function upload(file?:File){
   if(!file)return;setBusy(true);setMessage("");setIsError(false);
   try{
@@ -29,5 +40,5 @@ export function LogoUploader({businessId,initialUrl}:{businessId:string;initialU
   }catch(error){setIsError(true);setMessage(error instanceof Error?error.message:"Logo upload failed.");}
   finally{setBusy(false);}
  }
- return <div className="rounded-2xl border border-[#e7ece8] bg-[#fbfcfb] p-4"><p className="text-sm font-semibold">Business logo</p><div className="mt-3 flex items-center gap-4">{logo?<Image src={logo} alt="Business logo" width={64} height={64} unoptimized className="h-16 w-16 rounded-xl border border-[#e7ece8] bg-white object-contain p-1"/>:<div className="grid h-16 w-16 place-items-center rounded-xl border border-dashed border-[#cbd8ce] text-xs text-[#849189]">No logo</div>}<div><label className="inline-flex cursor-pointer rounded-xl border border-[#dfe7e1] bg-white px-4 py-2.5 text-sm font-semibold">{busy?"Uploading…":"Choose logo"}<input type="file" accept="image/png,image/jpeg,image/webp" disabled={busy} className="sr-only" onChange={e=>upload(e.target.files?.[0])}/></label><p className="mt-2 text-xs text-[#849189]">PNG, JPG or WebP. Automatically compressed below 100KB.</p></div></div>{message&&<p aria-live="polite" className={`mt-3 text-xs ${isError?"text-rose-600":"text-emerald-700"}`}>{message}</p>}</div>;
+ return <div className="rounded-2xl border border-[#e7ece8] bg-[#fbfcfb] p-4"><p className="text-sm font-semibold">Business logo</p><div className="mt-3 flex items-center gap-4">{logo?<Image src={logo} alt="Business logo" width={64} height={64} unoptimized className="h-16 w-16 rounded-xl border border-[#e7ece8] bg-white object-contain p-1"/>:<div className="grid h-16 w-16 place-items-center rounded-xl border border-dashed border-[#cbd8ce] text-xs text-[#849189]">No logo</div>}<div><label className="inline-flex cursor-pointer rounded-xl border border-[#dfe7e1] bg-white px-4 py-2.5 text-sm font-semibold">{busy?"Uploading…":"Choose logo"}<input type="file" accept="image/png,image/jpeg,image/webp" disabled={busy} className="sr-only" onChange={e=>upload(e.target.files?.[0])}/></label><p className="mt-2 text-xs text-[#849189]">PNG, JPG or WebP. Automatically compressed below 100KB.</p>{logo&&<button type="button" disabled={busy} onClick={()=>{if(window.confirm("Remove your business logo from future invoices?"))void removeLogo();}} className="mt-2 block text-xs font-semibold text-rose-600 disabled:opacity-50">Remove logo</button>}</div></div>{message&&<p aria-live="polite" className={`mt-3 text-xs ${isError?"text-rose-600":"text-emerald-700"}`}>{message}</p>}</div>;
 }

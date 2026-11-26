@@ -2,21 +2,78 @@
 
 **Send professional invoices in 60 seconds.**
 
-Mobile-first invoicing for freelancers and small businesses.
+Chargely is a mobile-first invoicing workspace for freelancers and small businesses across Nigeria and West Africa.
 
-## Stack
-- Next.js App Router + TypeScript
+## Built with
+
+- Next.js App Router and TypeScript
 - Tailwind CSS
-- Supabase Postgres, Auth, Storage and Row Level Security
-- Vercel
+- Supabase Auth and PostgreSQL
+- Supabase Row Level Security
+- Vercel deployment target
 
-## Security
-- Row Level Security on all tenant tables
-- Business ownership enforced in database policies
-- Never expose the Supabase service-role key in browser code
+## Implemented
 
-## Build phases
-1. Foundation, authentication, business profile, clients and items.
-2. Invoices, PDFs, public links, WhatsApp sharing and payment tracking.
-3. Plans, Paystack subscriptions, templates, email, PWA and SEO.
-4. Payment links, team features and reports.
+- Marketing landing page
+- Email/password signup and login
+- Business onboarding and profile settings
+- Client records (create, list, delete)
+- Saved products and services (create, list, delete)
+- Dashboard overview
+- Invoice creation with line items, discounts and tax
+- Atomic invoice numbering and total calculation in PostgreSQL
+- Invoice detail and list views
+- Public invoice links with random high-entropy tokens
+- WhatsApp sharing and copy-link action
+- Browser print / Save as PDF
+- Manual payment recording with partial and full payment status
+- Payment history and outstanding balance
+
+## Local development
+
+1. Install Node.js 20 or newer.
+2. Clone this repository.
+3. Copy `.env.example` to `.env.local`.
+4. Add the Supabase project URL and publishable key.
+5. Run:
+
+```bash
+npm install
+npm run dev
+```
+
+Open http://localhost:3000.
+
+## Environment variables
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-supabase-publishable-key
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+Set `NEXT_PUBLIC_APP_URL` to the deployed HTTPS domain before sending invoice links. Never commit `.env.local`, Supabase service-role keys, Paystack secret keys, or other credentials.
+
+## Supabase
+
+The connected Chargely Supabase project already has the foundation schema and invoice/payment RPC functions applied. The matching reproducible SQL is in `supabase/migrations`.
+
+Enable email/password authentication in Supabase Auth. Configure the Site URL and allowed redirect URLs for local development and your production domain.
+
+Every tenant-owned table has Row Level Security. Access is scoped through the authenticated user's business ownership. Public invoice access is through a 256-bit random token and a narrowly scoped RPC that returns only invoice display fields.
+
+## Build roadmap
+
+1. **Foundation:** authentication, business profile, clients, saved items.
+2. **Core invoicing:** invoice creation, PDF/print, public links, WhatsApp sharing and manual payment tracking.
+3. **Commercial release:** Paystack subscriptions, server-enforced plan limits, 10+ invoice templates, email reminders, PWA, CSV export, legal pages and SEO.
+4. **Growth:** payment links, teams, multi-business support and reports.
+
+Subscription pricing planned: Free (5 documents/month), Pro (₦2,500/month), Business (₦6,000/month). Plan enforcement and Paystack integration are not enabled yet.
+
+## Product principles
+
+- Mobile-first and simple to use.
+- No interest-based late fees or automatic penalty charges.
+- No payment or subscription is considered successful until verified server-side.
+- Never trust client-side plan limits or payment status.

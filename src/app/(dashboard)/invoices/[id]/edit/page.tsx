@@ -1,0 +1,21 @@
+import Link from "next/link";
+import { notFound,redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { updateInvoice } from "@/app/actions/invoices";
+import { InvoiceItemsEditor } from "@/components/invoice-items-editor";
+import { SubmitButton } from "@/components/submit-button";
+type Props={params:Promise<{id:string}>;searchParams:Promise<{error?:string}>};
+export default async function EditInvoicePage({params,searchParams}:Props){
+ const {id}=await params;const query=await searchParams;const supabase=await createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)redirect("/login");
+ const {data:d}=await supabase.from("documents").select("*,document_items(*),payments(id),document_signatures(id)").eq("id",id).maybeSingle();if(!d)notFound();
+ if((d.payments?.length||0)>0||(d.document_signatures?.length||0)>0)redirect(`/invoices/${id}?error=Invoices%20with%20payments%20or%20signatures%20cannot%20be%20edited`);
+ const {data:clients}=await supabase.from("clients").select("id,name").eq("business_id",d.business_id).order("name");
+ return <><Link href={`/invoices/${id}`} className="text-sm font-semibold text-[#087b58]">← Back to invoice</Link><div className="mt-4"><p className="text-sm font-semibold text-[#0b9468]">EDIT DOCUMENT</p><h1 className="mt-1 text-3xl font-bold">Edit {d.number}</h1><p className="mt-2 text-sm text-[#718078]">Update the client, dates, line items and notes. The existing share link stays the same.</p></div>{query.error&&<p role="alert" className="mt-4 rounded-xl bg-rose-50 p-3 text-sm text-rose-700">{query.error}</p>}
+ <form action={updateInvoice.bind(null,id)} className="mt-6 max-w-3xl space-y-5 rounded-2xl border border-[#e7ece8] bg-white p-5 sm:p-7">
+ <div className="grid gap-4 sm:grid-cols-2"><label className="text-sm font-semibold">Bill to<select name="client_id" required defaultValue={d.client_id||""} className="mt-2 w-full rounded-xl border border-[#dfe7e1] bg-white px-3.5 py-3"><option value="">Choose a client</option>{clients?.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label><label className="text-sm font-semibold">Issue date<input name="issue_date" type="date" defaultValue={d.issue_date} required className="mt-2 w-full rounded-xl border border-[#dfe7e1] px-3.5 py-3"/></label><label className="text-sm font-semibold">Due date<input name="due_date" type="date" defaultValue={d.due_date||""} className="mt-2 w-full rounded-xl border border-[#dfe7e1] px-3.5 py-3"/></label><label className="text-sm font-semibold">Currency<input readOnly value={d.currency} className="mt-2 w-full rounded-xl border border-[#dfe7e1] bg-[#f7f9f7] px-3.5 py-3"/></label></div>
+ <div className="border-t border-[#edf0ed] pt-5"><h2 className="font-bold">Invoice items</h2><p className="mt-1 text-xs text-[#849189]">Edit, add or remove up to 500 items.</p><InvoiceItemsEditor initialItems={d.document_items.map((x:{description:string;quantity:number;unit_price:number})=>({description:x.description,quantity:Number(x.quantity),unit_price:Number(x.unit_price)}))}/></div>
+ <div className="grid gap-4 sm:grid-cols-2"><label className="text-sm font-semibold">Discount ({d.currency})<input name="discount" type="number" min="0" step="0.01" defaultValue={d.discount} className="mt-2 w-full rounded-xl border border-[#dfe7e1] px-3.5 py-3"/></label><label className="text-sm font-semibold">Tax rate (%)<input name="tax_rate" type="number" min="0" max="100" step="0.01" defaultValue={Number(d.subtotal)>Number(d.discount)?Number(d.tax)/(Number(d.subtotal)-Number(d.discount))*100:0} className="mt-2 w-full rounded-xl border border-[#dfe7e1] px-3.5 py-3"/></label></div>
+ <label className="block text-sm font-semibold">Notes<textarea name="notes" rows={3} defaultValue={d.notes||""} className="mt-2 w-full rounded-xl border border-[#dfe7e1] px-3.5 py-3"/></label>
+ <SubmitButton pendingLabel="Saving changes…" className="w-full rounded-xl bg-[#087b58] px-5 py-3.5 font-semibold text-white">Save invoice changes</SubmitButton>
+ </form></>;
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Chargely — Invoicing made simple",
+  "short_name": "Chargely",
+  "description": "Create invoices, share them and track payments.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#f7f9f7",
+  "theme_color": "#087b58",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

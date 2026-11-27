@@ -10,6 +10,12 @@ button,a { -webkit-tap-highlight-color:transparent; }
 /* The on-screen invoice is a paper document, not a dashboard card. */
 .invoice-document { box-shadow: 0 18px 55px rgba(21, 42, 31, .055); }
 .invoice-template-editorial { border-top-width: 4px; }
+.invoice-template-editorial > div:first-child { padding-bottom: 1.5rem; }
+.invoice-template-split > div:first-child { display: grid !important; grid-template-columns: 1fr 1fr; align-items: start; gap: 1.25rem; }
+.invoice-template-minimal > div:first-child { border-bottom: 1px solid #e5e7eb; padding-bottom: 1.25rem; }
+.invoice-template-classic > div:first-child { padding-bottom: 1.25rem; }
+.invoice-template-sidebar > div:first-child { padding-left: .5rem; }
+.invoice-template-dark > div:first-child, .invoice-template-band > div:first-child { border-radius: .75rem; }
 .invoice-template-split { border-top-width: 4px; }
 .invoice-template-minimal { border-color: #d7dce0; }
 .invoice-template-classic { border-top-width: 5px; border-color: #e8dfc9; }

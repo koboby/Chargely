@@ -130,6 +130,7 @@ function makePdf(invoice: PdfInvoice) {
     pdf.setTextColor(...ink); pdf.text(money(item.amount), colAmount, y + 6, { align: "right" });
     y += rowH;
   }
+  if (y + 75 > 265) { pdf.addPage(); y = 20; }
   y += 9;
   const summaryX = right - 78;
   const summary = [
